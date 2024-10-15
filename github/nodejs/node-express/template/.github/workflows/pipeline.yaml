@@ -101,48 +101,56 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Check if SonarCloud Project Exists
+      - name: Check if SonarCloud Project Exists and Provision if Necessary
         id: sonarcloud-check
         run: |
           repo_name=$(echo "${{ github.repository }}" | sed 's/.*\///')
           organization="${{ secrets.SONAR_ORG }}"
+          project_key="${organization}_${repo_name}"
 
           # Search for the project in SonarCloud
           response=$(curl -s -u "${{ secrets.SONAR_TOKEN }}:" \
-            "https://sonarcloud.io/api/projects/search?projects=${repo_name}&organization=${organization}")
+            "https://sonarcloud.io/api/projects/search?organization=${organization}&projects=${project_key}")
 
           project_exists=$(echo "$response" | jq '.paging.total')
           if [ "$project_exists" -eq 0 ]; then
-            echo "SonarCloud project does not exist. Creating project..."
+            echo "SonarCloud project does not exist. Provisioning project..."
 
-            # Create the project in SonarCloud
-            create_response=$(curl -s -X POST -u "${{ secrets.SONAR_TOKEN }}:" \
-              "https://sonarcloud.io/api/projects/create" \
+            # Provision the project in SonarCloud with ALM binding
+            provision_response=$(curl -s -X POST -u "${{ secrets.SONAR_TOKEN }}:" \
+              "https://sonarcloud.io/api/alm_integration/provision_projects" \
               -d "organization=${organization}" \
-              -d "name=${repo_name}" \
-              -d "project=${repo_name}")
+              -d "projectKey=${project_key}" \
+              -d "projectName=${repo_name}" \
+              -d "repository=${{ github.repository }}" \
+              -d "provider=github")
 
-            # Check if the project was created successfully
-            status=$(echo "$create_response" | jq -r '.project.key')
-            if [ "$status" == "$repo_name" ]; then
-              echo "SonarCloud project created successfully."
-            else
-              echo "Failed to create SonarCloud project. Response:"
-              echo "$create_response"
+            # Check if the project was provisioned successfully
+            errors=$(echo "$provision_response" | jq '.errors')
+            if [ "$errors" != "null" ]; then
+              echo "Failed to provision SonarCloud project. Response:"
+              echo "$provision_response"
               exit 1
+            else
+              echo "SonarCloud project provisioned successfully."
             fi
           else
             echo "SonarCloud project already exists."
           fi
 
+
       # - name: Run tests with coverage
       #   run: npm run test:cov
 
-      - name: Run Static Analysis (SonarCloud)
-        uses: SonarSource/sonarcloud-github-action@master
+      - name: Run SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@v2
+        with:
+          args: >
+            -Dsonar.organization=${{ secrets.SONAR_ORG }}
+            -Dsonar.projectKey=${{ secrets.SONAR_ORG }}_${{ github.repository }}
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   deploy-dev:
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/')
