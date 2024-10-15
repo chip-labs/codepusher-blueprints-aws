@@ -138,11 +138,11 @@ jobs:
       # - name: Run tests with coverage
       #   run: npm run test:cov
 
-      # - name: Run Static Analysis (SonarCloud)
-      #   uses: SonarSource/sonarcloud-github-action@master
-      #   env:
-      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      #     GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+      - name: Run Static Analysis (SonarCloud)
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
 
   deploy-dev:
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/')
