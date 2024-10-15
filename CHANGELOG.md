@@ -1,3 +1,10 @@
+## [0.3.33](https://github.com/chip-labs/codepusher-blueprints-aws/compare/v0.3.32...v0.3.33) (2024-10-15)
+
+
+### Bug Fixes
+
+* **chart:** rollback to aws ([4cc3ae1](https://github.com/chip-labs/codepusher-blueprints-aws/commit/4cc3ae122348222162a50ba2bcf0b0f76e29f035))
+
 ## [0.3.32](https://github.com/chip-labs/codepusher-blueprints-aws/compare/v0.3.31...v0.3.32) (2024-10-15)
 
 
