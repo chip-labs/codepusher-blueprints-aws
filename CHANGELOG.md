@@ -1,3 +1,10 @@
+## [0.3.29](https://github.com/chip-labs/codepusher-blueprints-aws/compare/v0.3.28...v0.3.29) (2024-10-15)
+
+
+### Bug Fixes
+
+* **template:** fix template NodeJS ([c80f081](https://github.com/chip-labs/codepusher-blueprints-aws/commit/c80f081718af1310ea62cb3607ed8e3e9a7a4df0))
+
 ## [0.3.28](https://github.com/chip-labs/codepusher-blueprints-aws/compare/v0.3.27...v0.3.28) (2024-09-06)
 
 
