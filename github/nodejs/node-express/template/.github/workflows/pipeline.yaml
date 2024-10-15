@@ -104,13 +104,33 @@ jobs:
       - name: Check if SonarCloud Project Exists
         id: sonarcloud-check
         run: |
-          repo_name=$(echo ${{ github.repository }} | sed 's/.*\///')
-          response=$(curl -s -u "${{ secrets.SONAR_TOKEN }}:" "https://sonarcloud.io/api/projects/search?projects=${repo_name}")
+          repo_name=$(echo "${{ github.repository }}" | sed 's/.*\///')
+          organization="${{ secrets.SONAR_ORG }}"
+
+          # Search for the project in SonarCloud
+          response=$(curl -s -u "${{ secrets.SONAR_TOKEN }}:" \
+            "https://sonarcloud.io/api/projects/search?projects=${repo_name}&organization=${organization}")
+
           project_exists=$(echo "$response" | jq '.paging.total')
           if [ "$project_exists" -eq 0 ]; then
             echo "SonarCloud project does not exist. Creating project..."
-            curl -X POST -u "${{ secrets.SONAR_TOKEN }}:" \
-              "https://sonarcloud.io/api/projects/create?name=${repo_name}&project=${repo_name}&organization=${{ secrets.SONAR_ORG }}"
+
+            # Create the project in SonarCloud
+            create_response=$(curl -s -X POST -u "${{ secrets.SONAR_TOKEN }}:" \
+              "https://sonarcloud.io/api/projects/create" \
+              -d "organization=${organization}" \
+              -d "name=${repo_name}" \
+              -d "project=${repo_name}")
+
+            # Check if the project was created successfully
+            status=$(echo "$create_response" | jq -r '.project.key')
+            if [ "$status" == "$repo_name" ]; then
+              echo "SonarCloud project created successfully."
+            else
+              echo "Failed to create SonarCloud project. Response:"
+              echo "$create_response"
+              exit 1
+            fi
           else
             echo "SonarCloud project already exists."
           fi
