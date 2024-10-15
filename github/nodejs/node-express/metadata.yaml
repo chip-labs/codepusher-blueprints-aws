@@ -17,7 +17,7 @@ spec:
   type: service
   engine: 
     type: github
-    version: "1.0.1"
+    version: "1.0.0"
   steps:
     - title: Basic Information
       properties:
@@ -25,6 +25,10 @@ spec:
           title: Service Name
           type: string
           description: "Name of the service."
+        serviceDescription:
+          title: Service Description
+          type: string
+          description: "A brief description of your service."
         project:
           title: Project Name
           type: string
@@ -33,16 +37,13 @@ spec:
         sonarOrg:
           title: Sonar Organization
           type: string
+          default: chip-labs
           description: "The Sonar organization to associate with this service."
         owner:
           title: Owner
           type: select
           items:
             type: list:team
-        serviceDescription:
-          title: Service Description
-          type: string
-          description: "A brief description of your service."
         githubOrg:
           type: get:integration:githubOrg
           autofill: true
