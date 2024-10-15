@@ -10,7 +10,7 @@ metadata:
     - eks
 spec:
   templateUrl: "https://github.com/codepusher-platform/codepusher-blueprints-aws/blob/main/github/chart/template"
-  provider: argo
+  provider: aws
   owner: codepusher-team
   type: deployment
   engine:
