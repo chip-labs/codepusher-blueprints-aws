@@ -1,3 +1,10 @@
+## [0.3.35](https://github.com/chip-labs/codepusher-blueprints-aws/compare/v0.3.34...v0.3.35) (2024-10-15)
+
+
+### Bug Fixes
+
+* **pipeline:** Enable SonarCloud static analysis ([219cf74](https://github.com/chip-labs/codepusher-blueprints-aws/commit/219cf7437fd80b57e267a4300daaa80684057ef0))
+
 ## [0.3.34](https://github.com/chip-labs/codepusher-blueprints-aws/compare/v0.3.33...v0.3.34) (2024-10-15)
 
 
