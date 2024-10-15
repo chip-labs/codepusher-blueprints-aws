@@ -2,8 +2,8 @@ apiVersion: codepusher.io/v1alpha1
 kind: template
 metadata:
   name: nodejs-express-service
-  displayName: Scaffold a new Nodejs+Express service
-  description: Quickly create a Node.js service built with Express.
+  displayName: Node.js Express Service
+  description: "A template for creating a Node.js Express service."
   tags:
     - nodejs
     - express
@@ -17,23 +17,32 @@ spec:
   type: service
   engine: 
     type: github
-    version: "1.0.0"
+    version: "1.0.1"
   steps:
     - title: Basic Information
       properties:
         serviceName:
-          title: Service Name (K8s)
+          title: Service Name
           type: string
-          description: "Unique name for your service within Kubernetes (e.g., 'my-express-app'). This will be used to create resources like deployments and services."
+          description: "Name of the service."
         project:
-          title: Project Name (GitHub)
+          title: Project Name
           type: string
-          description: "The name of your project on GitHub where the source code is located."
+          default: chip-labs
+          description: "Name of the project that this service belongs to."
+        sonarOrg:
+          title: Sonar Organization
+          type: string
+          description: "The Sonar organization to associate with this service."
         owner:
           title: Owner
           type: select
           items:
             type: list:team
+        serviceDescription:
+          title: Service Description
+          type: string
+          description: "A brief description of your service."
         githubOrg:
           type: get:integration:githubOrg
           autofill: true
