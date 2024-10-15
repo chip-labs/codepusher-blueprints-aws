@@ -1,3 +1,10 @@
+## [0.3.31](https://github.com/chip-labs/codepusher-blueprints-aws/compare/v0.3.30...v0.3.31) (2024-10-15)
+
+
+### Bug Fixes
+
+* **dockerfile:** adjust npm install ([6e1e8be](https://github.com/chip-labs/codepusher-blueprints-aws/commit/6e1e8be4e059ac355eabb0cc8ec0c4f81bc91d57))
+
 ## [0.3.29](https://github.com/chip-labs/codepusher-blueprints-aws/compare/v0.3.28...v0.3.29) (2024-10-15)
 
 
