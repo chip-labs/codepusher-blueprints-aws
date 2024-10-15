@@ -1,3 +1,10 @@
+## [0.3.32](https://github.com/chip-labs/codepusher-blueprints-aws/compare/v0.3.31...v0.3.32) (2024-10-15)
+
+
+### Bug Fixes
+
+* **chart:** updated chart repo ([33b624d](https://github.com/chip-labs/codepusher-blueprints-aws/commit/33b624d7223a1ab6789ea412d8403fe4a6a602dd))
+
 ## [0.3.31](https://github.com/chip-labs/codepusher-blueprints-aws/compare/v0.3.30...v0.3.31) (2024-10-15)
 
 
