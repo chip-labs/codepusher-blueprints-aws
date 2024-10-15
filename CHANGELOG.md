@@ -1,3 +1,10 @@
+## [0.3.37](https://github.com/chip-labs/codepusher-blueprints-aws/compare/v0.3.36...v0.3.37) (2024-10-15)
+
+
+### Bug Fixes
+
+* **pipeline:** Update SonarCloud project provisioning ([6ebe998](https://github.com/chip-labs/codepusher-blueprints-aws/commit/6ebe99841403cf1ddf754f8d784437a72aa98080))
+
 ## [0.3.36](https://github.com/chip-labs/codepusher-blueprints-aws/compare/v0.3.35...v0.3.36) (2024-10-15)
 
 
