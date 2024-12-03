@@ -1,3 +1,10 @@
+## [0.4.5](https://github.com/chip-labs/codepusher-blueprints-aws/compare/v0.4.4...v0.4.5) (2024-12-03)
+
+
+### Bug Fixes
+
+* **outputs:** update output values to match new module attributes ([bf61416](https://github.com/chip-labs/codepusher-blueprints-aws/commit/bf6141699570c0bde24f75a29457e87d676bc0e9))
+
 ## [0.4.4](https://github.com/chip-labs/codepusher-blueprints-aws/compare/v0.4.3...v0.4.4) (2024-12-03)
 
 
