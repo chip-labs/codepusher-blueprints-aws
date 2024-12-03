@@ -37,11 +37,11 @@ spec:
           type: get:environment:region
           autofill: true
         roleArn:
-          type: get:cloudAccount:roleArn
+          type: get:environment:roleArn
           autofill: true
         stateBucket:
-          type: get:cloudAccount:stateBucket
+          type: get:environment:stateBucket
           autofill: true
         stateTable:
-          type: get:cloudAccount:stateTable
+          type: get:environment:stateTable
           autofill: true
