@@ -20,7 +20,7 @@ spec:
   steps:
     - title: S3 Bucket Details
       properties:
-        bucketName:
+        name:
           title: Bucket Name (unique)
           type: string
         owner:
