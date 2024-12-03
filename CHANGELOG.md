@@ -1,3 +1,10 @@
+## [0.4.3](https://github.com/chip-labs/codepusher-blueprints-aws/compare/v0.4.2...v0.4.3) (2024-12-03)
+
+
+### Bug Fixes
+
+* **metadata:** Change bucketName to name ([4523d1f](https://github.com/chip-labs/codepusher-blueprints-aws/commit/4523d1fc461c06b7ffa28de8991bd5b0cc214057))
+
 ## [0.4.2](https://github.com/chip-labs/codepusher-blueprints-aws/compare/v0.4.1...v0.4.2) (2024-12-03)
 
 
