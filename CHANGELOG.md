@@ -1,3 +1,10 @@
+# [0.4.0](https://github.com/chip-labs/codepusher-blueprints-aws/compare/v0.3.38...v0.4.0) (2024-12-03)
+
+
+### Features
+
+* **s3-bucket:** Add Terraform module and template for S3 bucket creation ([fa4a2dd](https://github.com/chip-labs/codepusher-blueprints-aws/commit/fa4a2dd76794c1d01c88ca0a346111a0da3dc1ab))
+
 ## [0.3.38](https://github.com/chip-labs/codepusher-blueprints-aws/compare/v0.3.37...v0.3.38) (2024-10-15)
 
 
