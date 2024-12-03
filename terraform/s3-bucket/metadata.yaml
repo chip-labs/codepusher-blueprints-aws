@@ -1,0 +1,41 @@
+apiVersion: codepusher.io/v1alpha1
+kind: template
+metadata:
+  name: codepusher-aws-terraform-s3-bucket
+  displayName: Create a S3 Bucket
+  description: The Codepusher AWS terraform S3 Bucket template
+  tags:
+    - aws
+    - terraform
+    - s3
+spec:
+  templateUrl: "https://github.com/codepusher-platform/codepusher-blueprints-aws/blob/main/terraform/s3-bucket/template"
+  provider: aws
+  owner: codepusher-team
+  type: resource
+  engine: 
+    type: opentofu
+    version: "1.17"
+  steps:
+    - title: S3 Bucket Details
+      properties:
+        bucketName:
+          title: Bucket Name (unique)
+          type: string
+        owner:
+          title: Owner
+          type: select
+          items:
+            type: list:team
+        region:
+          type: get:environment:region
+          autofill: true
+        roleArn:
+          type: get:cloudAccount:roleArn
+          autofill: true
+        stateBucket:
+          type: get:cloudAccount:stateBucket
+          autofill: true
+        stateTable:
+          type: get:cloudAccount:stateTable
+          autofill: true
