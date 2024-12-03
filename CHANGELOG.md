@@ -1,3 +1,10 @@
+## [0.4.1](https://github.com/chip-labs/codepusher-blueprints-aws/compare/v0.4.0...v0.4.1) (2024-12-03)
+
+
+### Bug Fixes
+
+* **metadata:** Add environment selection to S3 bucket metadata ([9987827](https://github.com/chip-labs/codepusher-blueprints-aws/commit/9987827356fe885798d8503f687b7fa31ec6e52f))
+
 # [0.4.0](https://github.com/chip-labs/codepusher-blueprints-aws/compare/v0.3.38...v0.4.0) (2024-12-03)
 
 
