@@ -13,6 +13,7 @@ spec:
   provider: aws
   owner: codepusher-team
   type: resource
+  resourceType: "S3"
   engine: 
     type: opentofu
     version: "1.17"
