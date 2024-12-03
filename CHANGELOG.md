@@ -1,3 +1,10 @@
+## [0.4.2](https://github.com/chip-labs/codepusher-blueprints-aws/compare/v0.4.1...v0.4.2) (2024-12-03)
+
+
+### Bug Fixes
+
+* **metadata:** Specify resource type as S3 in metadata.yaml ([87fd223](https://github.com/chip-labs/codepusher-blueprints-aws/commit/87fd223a03cf9a3c86bbc64e5d41e18bb0351ea5))
+
 ## [0.4.1](https://github.com/chip-labs/codepusher-blueprints-aws/compare/v0.4.0...v0.4.1) (2024-12-03)
 
 
