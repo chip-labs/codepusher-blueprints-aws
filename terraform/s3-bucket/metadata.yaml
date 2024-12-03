@@ -27,6 +27,11 @@ spec:
           type: select
           items:
             type: list:team
+        environmentName:
+          title: Select Environment
+          type: select
+          items:
+            type: list:environment
         region:
           type: get:environment:region
           autofill: true
