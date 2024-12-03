@@ -1,3 +1,10 @@
+## [0.4.4](https://github.com/chip-labs/codepusher-blueprints-aws/compare/v0.4.3...v0.4.4) (2024-12-03)
+
+
+### Bug Fixes
+
+* **metadata:** adjust cloud account information get ([52a4aa1](https://github.com/chip-labs/codepusher-blueprints-aws/commit/52a4aa1c6b1f980d53ac7886a10bbd6203404a1e))
+
 ## [0.4.3](https://github.com/chip-labs/codepusher-blueprints-aws/compare/v0.4.2...v0.4.3) (2024-12-03)
 
 
