@@ -1,17 +1,20 @@
-# Use the official Python image as base
-FROM python:3.13.0b1-slim
+# Base image
+FROM python:3.12-slim
 
-# Set the working directory in the container
+# Set working directory
 WORKDIR /app
 
-# Copy the current directory contents into the container at /app
-COPY . /app
-
 # Install dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+COPY pyproject.toml poetry.lock* /app/
+RUN pip install --no-cache-dir poetry && \
+    poetry config virtualenvs.create false && \
+    poetry install --no-interaction --no-ansi
 
-# Expose port 80 to the outside world
-EXPOSE 8080
+# Copy the application files
+COPY app /app/app
 
-# Command to run the FastAPI application
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]
+# Expose port
+EXPOSE 8000
+
+# Run the application
+CMD ["poetry", "run", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
