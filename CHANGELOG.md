@@ -1,3 +1,10 @@
+# [0.5.0](https://github.com/chip-labs/codepusher-blueprints-aws/compare/v0.4.5...v0.5.0) (2024-12-05)
+
+
+### Features
+
+* **template:** add FastAPI template structure with example endpoint and configuration ([c57239d](https://github.com/chip-labs/codepusher-blueprints-aws/commit/c57239dfe608a77aace2d0d2e6899680da21d0da))
+
 ## [0.4.5](https://github.com/chip-labs/codepusher-blueprints-aws/compare/v0.4.4...v0.4.5) (2024-12-03)
 
 
