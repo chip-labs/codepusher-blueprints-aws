@@ -1,3 +1,10 @@
+# [0.7.0](https://github.com/chip-labs/codepusher-blueprints-aws/compare/v0.6.0...v0.7.0) (2024-12-05)
+
+
+### Features
+
+* **pipeline:** add checks for chart repository existence before deployment steps ([e4a6ea0](https://github.com/chip-labs/codepusher-blueprints-aws/commit/e4a6ea07856e80e46feb1671608a2bb480168728))
+
 # [0.6.0](https://github.com/chip-labs/codepusher-blueprints-aws/compare/v0.5.1...v0.6.0) (2024-12-05)
 
 
