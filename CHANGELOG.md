@@ -1,3 +1,10 @@
+## [0.5.1](https://github.com/chip-labs/codepusher-blueprints-aws/compare/v0.5.0...v0.5.1) (2024-12-05)
+
+
+### Bug Fixes
+
+* **pipeline:** update setup-python action reference in workflow ([d4c8142](https://github.com/chip-labs/codepusher-blueprints-aws/commit/d4c81422b80dc00de06d8ae6a88dc286d0a9ccc3))
+
 # [0.5.0](https://github.com/chip-labs/codepusher-blueprints-aws/compare/v0.4.5...v0.5.0) (2024-12-05)
 
 
