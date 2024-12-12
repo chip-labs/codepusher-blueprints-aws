@@ -1,3 +1,10 @@
+# [0.8.0](https://github.com/chip-labs/codepusher-blueprints-aws/compare/v0.7.1...v0.8.0) (2024-12-12)
+
+
+### Features
+
+* **s3-bucket:** add control object ownership variables to module ([732941a](https://github.com/chip-labs/codepusher-blueprints-aws/commit/732941adcc3269ff887331278f8591ce33eccca8))
+
 ## [0.7.1](https://github.com/chip-labs/codepusher-blueprints-aws/compare/v0.7.0...v0.7.1) (2024-12-12)
 
 
