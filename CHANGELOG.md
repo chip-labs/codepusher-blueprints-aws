@@ -1,3 +1,10 @@
+## [0.7.1](https://github.com/chip-labs/codepusher-blueprints-aws/compare/v0.7.0...v0.7.1) (2024-12-12)
+
+
+### Bug Fixes
+
+* **template:** update S3 bucket name variable to use 'name' instead of 'bucketName' ([3b2fb54](https://github.com/chip-labs/codepusher-blueprints-aws/commit/3b2fb549cabf86f22a693bf82b85ef582a8dffd5))
+
 # [0.7.0](https://github.com/chip-labs/codepusher-blueprints-aws/compare/v0.6.0...v0.7.0) (2024-12-05)
 
 
