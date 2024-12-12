@@ -1,9 +1,10 @@
 module "s3_bucket" {
   source  = "terraform-aws-modules/s3-bucket/aws"
-  version = "~> 3.0"
 
   bucket        = var.bucket_name
   force_destroy = var.force_destroy
+  control_object_ownership = var.control_object_ownership
+  object_ownership         = var.object_ownership
 
   versioning = {
     enabled = var.versioning_enabled

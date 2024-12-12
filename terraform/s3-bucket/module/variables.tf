@@ -9,6 +9,18 @@ variable "force_destroy" {
   default     = false
 }
 
+variable "control_object_ownership" {
+  description = "Whether to control ownership of objects in the bucket"
+  type        = bool
+  default     = true
+}
+
+variable "object_ownership" {
+  description = "The AWS account ID of the owner"
+  type        = string
+  default = "ObjectWriter"
+}
+
 variable "versioning_enabled" {
   description = "Enable versioning on the bucket"
   type        = bool
