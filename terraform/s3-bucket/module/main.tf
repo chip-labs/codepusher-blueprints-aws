@@ -3,7 +3,6 @@ module "s3_bucket" {
   version = "~> 3.0"
 
   bucket        = var.bucket_name
-  acl           = var.acl
   force_destroy = var.force_destroy
 
   versioning = {

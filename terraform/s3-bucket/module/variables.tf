@@ -3,12 +3,6 @@ variable "bucket_name" {
   type        = string
 }
 
-variable "acl" {
-  description = "Canned ACL to apply"
-  type        = string
-  default     = "private"
-}
-
 variable "force_destroy" {
   description = "Whether to allow the bucket to be destroyed without emptying it first"
   type        = bool
