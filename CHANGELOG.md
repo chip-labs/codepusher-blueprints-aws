@@ -1,3 +1,10 @@
+# [0.9.0](https://github.com/chip-labs/codepusher-blueprints-aws/compare/v0.8.0...v0.9.0) (2025-03-10)
+
+
+### Features
+
+* **golang:** add golang fiber template ([fad1e81](https://github.com/chip-labs/codepusher-blueprints-aws/commit/fad1e81f4bbf0f4b2a1c045cfdcb633e561183be))
+
 # [0.8.0](https://github.com/chip-labs/codepusher-blueprints-aws/compare/v0.7.1...v0.8.0) (2024-12-12)
 
 
