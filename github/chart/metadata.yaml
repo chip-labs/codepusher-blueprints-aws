@@ -30,7 +30,7 @@ spec:
           items: 
             type: list:service
         imageRegistryName:
-          type: get:cluster:registryName
+          type: get:integration:registryName
           autofill: true
         environmentName:
           type: get:cluster:environmentName
