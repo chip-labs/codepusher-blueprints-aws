@@ -6,13 +6,13 @@ metadata:
 spec:
   generators:
     - list:
-      elements:
-        - env: platform-dev
-          namespace: platform-ai-dev
-          path: environments/platform-dev
-        # - env: platform-prod
-        #   namespace: platform-ai-prod
-        #   path: environments/platform-prod
+        elements:
+          - env: platform-dev
+            namespace: platform-ai-dev
+            path: environments/platform-dev
+          # - env: platform-prod
+          #   namespace: platform-ai-prod
+          #   path: environments/platform-prod
   template:
     metadata:
       name: "{{ .serviceName }}-{{ env }}"
