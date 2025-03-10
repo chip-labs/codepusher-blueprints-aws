@@ -5,14 +5,17 @@ metadata:
   namespace: argocd
 spec:
   generators:
-    - git:
-        repoURL: https://github.com/{{ .githubOrg }}/{{ .serviceName }}-chart.git
-        revision: HEAD
-        directories:
-          - path: environments/*
+    - list:
+      elements:
+        - env: platform-dev
+          namespace: platform-ai-dev
+          path: environments/platform-dev
+        # - env: platform-prod
+        #   namespace: platform-ai-prod
+        #   path: environments/platform-prod
   template:
     metadata:
-      name: "{{ .serviceName }}-{{ path.basename }}"
+      name: "{{ .serviceName }}-{{ env }}"
     spec:
       project: default
       source:
@@ -20,8 +23,8 @@ spec:
         targetRevision: HEAD
         path: "{{ path }}"
       destination:
-        name: "{{ path.basename }}"
-        namespace: {{ .projectName }}
+        name: "{{ env }}"
+        namespace: "{{ namespace }}"
       syncPolicy:
         automated:
           prune: true
