@@ -10,11 +10,11 @@ metadata:
     - service
     - api
 spec:
-  templateUrl: "https://github.com/codepusher-platform/codepusher-blueprints-aws/blob/main/github/golang/golang-fiber/template" # Replace with your actual template URL
+  templateUrl: "https://github.com/codepusher-platform/codepusher-blueprints-aws/blob/main/github/golang/golang-fiber/template"
   provider: github
-  owner: codepusher-developers
-  type: service
+  owner: codepusher-team
   language: go
+  type: service
   engine:
     type: github
     version: "1.0.0"
@@ -22,13 +22,23 @@ spec:
     - title: Basic Information
       properties:
         serviceName:
-          title: Service Name (K8s)
+          title: Service Name
           type: string
-          description: "Unique name for your Golang service within Kubernetes (e.g., 'my-golang-fiber-app')."
+          description: "Name of the service."
+        serviceDescription:
+          title: Service Description
+          type: string
+          description: "A brief description of your service."
         project:
-          title: Project Name (GitHub)
+          title: Project Name
           type: string
-          description: "The name of your GitHub repository where your Golang project's code resides."
+          default: chip-labs
+          description: "Name of the project that this service belongs to."
+        sonarOrg:
+          title: Sonar Organization
+          type: string
+          default: chip-labs
+          description: "The Sonar organization to associate with this service."
         owner:
           title: Owner
           type: select
@@ -37,9 +47,3 @@ spec:
         githubOrg:
           type: get:integration:githubOrg
           autofill: true
-        additionalDependencies:
-          title: Additional Dependencies
-          type: array
-          description: "Add any additional Go modules you need (e.g., 'gorm.io/gorm', 'github.com/go-redis/redis')."
-          items:
-            type: string

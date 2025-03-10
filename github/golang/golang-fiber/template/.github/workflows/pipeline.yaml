@@ -1,0 +1,319 @@
+name: CodePusher Pipelines
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*'
+      - 'demo*'
+  create:
+    tags:
+      - 'v*'
+      - 'demo*'
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: ${{ vars.AWS_REGION }}
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    outputs:
+      image_tag: ${{ steps.get-image-tag.outputs.image_tag }}
+      repo_name: ${{ steps.extract-repo-name.outputs.repo_name }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials for ECR (Only on push or tag)
+        if: github.event_name != 'pull_request'
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ECR_ROLE }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Extract Repository Name (Only on push or tag)
+        if: github.event_name != 'pull_request'
+        id: extract-repo-name
+        run: |
+          echo "repo_name=$(echo ${{ github.repository }} | sed 's/.*\///')" >> "$GITHUB_OUTPUT"
+
+      - name: Login to Amazon ECR (Only on push or tag)
+        uses: aws-actions/amazon-ecr-login@v2
+        if: github.event_name != 'pull_request'
+
+      - name: Create/Update ECR Repository (Only on push or tag)
+        uses: int128/create-ecr-repository-action@v1
+        if: github.event_name != 'pull_request'
+        id: login-ecr
+        with:
+          repository: ${{ steps.extract-repo-name.outputs.repo_name }}
+
+      - name: Get Image Tag (Only on push or tag)
+        if: github.event_name != 'pull_request'
+        id: get-image-tag
+        run: |
+          if [[ "${GITHUB_REF_TYPE}" == "tag" ]]; then
+            TAG_NAME=${GITHUB_REF#refs/tags/}
+            echo "image_tag=${TAG_NAME}" >> "$GITHUB_OUTPUT"
+          else
+            SHORT_SHA=$(echo "${GITHUB_SHA::7}")
+            echo "image_tag=${SHORT_SHA}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Build, Tag, and Push Docker Image to Amazon ECR (Only on push or tag)
+        if: github.event_name != 'pull_request'
+        env:
+          REPOSITORY: ${{ steps.login-ecr.outputs.repository-uri }}
+          IMAGE_TAG: ${{ steps.get-image-tag.outputs.image_tag }}
+        run: |
+          docker build -t $REPOSITORY:$IMAGE_TAG .
+          docker push $REPOSITORY:$IMAGE_TAG
+
+  test-scan:
+    name: Test and Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Create GitHub App Token
+        uses: actions/create-github-app-token@v1
+        id: app-token
+        with:
+          app-id: ${{ vars.APP_ID }}
+          private-key: ${{ secrets.PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Check if SonarCloud Project Exists
+        id: sonarcloud-check
+        run: |
+          repo_name=$(echo "${{ github.repository }}" | sed 's/.*\///')
+          organization="${{ secrets.SONAR_ORG }}"
+
+          # Search for the project in SonarCloud
+          response=$(curl -s -u "${{ secrets.SONAR_TOKEN }}:" \
+            "https://sonarcloud.io/api/projects/search?projects=${repo_name}&organization=${organization}")
+
+          project_exists=$(echo "$response" | jq '.paging.total')
+          if [ "$project_exists" -eq 0 ]; then
+            echo "SonarCloud project does not exist. Creating project..."
+
+            # Create the project in SonarCloud
+            create_response=$(curl -s -X POST -u "${{ secrets.SONAR_TOKEN }}:" \
+              "https://sonarcloud.io/api/projects/create" \
+              -d "organization=${organization}" \
+              -d "name=${repo_name}" \
+              -d "project=${repo_name}")
+
+            # Check if the project was created successfully
+            status=$(echo "$create_response" | jq -r '.project.key')
+            if [ "$status" == "$repo_name" ]; then
+              echo "SonarCloud project created successfully."
+            else
+              echo "Failed to create SonarCloud project. Response:"
+              echo "$create_response"
+              exit 1
+            fi
+          else
+            echo "SonarCloud project already exists."
+          fi
+
+      # - name: Run tests with coverage
+      #   run: npm run test:cov
+
+      - name: Run Static Analysis (SonarCloud)
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  deploy-dev:
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/')
+    runs-on: ubuntu-latest
+    needs:
+      - build
+      - test-scan
+    steps:
+      - uses: actions/create-github-app-token@v1
+        id: app-token
+        with:
+          app-id: ${{ vars.APP_ID }}
+          private-key: ${{ secrets.PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+
+      - name: Checkout Chart Repo
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository }}-chart
+          ref: main
+          token: ${{ steps.app-token.outputs.token }}
+          persist-credentials: false
+
+      - name: '[DEVELOP] Bump to version ${{ needs.build.outputs.image_tag }}'
+        run: |
+          sed -i "s/tag:.*/tag: \"${{ needs.build.outputs.image_tag }}\"/g" environments/platform-dev/values.yaml
+
+      - name: Commit changes
+        run: |
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+          git add environments/platform-dev/values.yaml
+          git commit -m "bump image to ${{ needs.build.outputs.image_tag }} version"
+
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@v3
+        id: create-pr
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          commit-message: '[DEVELOP] Bump to version ${{ needs.build.outputs.image_tag }}'
+          title: '[DEVELOP] Bump to version ${{ needs.build.outputs.image_tag }}'
+          body: |
+            [DEVELOP] This PR updates the IMAGE_TAG in values.yaml to ${{ needs.build.outputs.image_tag }}.
+          branch: bump-image-tag-${{ needs.build.outputs.image_tag }}
+          base: main
+          labels: auto-merge
+          assignees: "codepusher-bot"
+
+      - name: 'Merge pull request'
+        uses: 'actions/github-script@v7'
+        with:
+          github-token: ${{ steps.app-token.outputs.token }}
+          script: |
+            await github.rest.pulls.merge({
+              owner: context.repo.owner,
+              pull_number: ${{ steps.create-pr.outputs.pull-request-number }},
+              repo: "${{ needs.build.outputs.repo_name }}-chart",
+            })
+
+  deploy-demo:
+    if: github.event_name == 'create' && github.ref_type == 'tag' && startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    needs:
+      - build
+      - test-scan
+    steps:
+      - uses: actions/create-github-app-token@v1
+        id: app-token
+        with:
+          app-id: ${{ vars.APP_ID }}
+          private-key: ${{ secrets.PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+
+      - name: Checkout Chart Repo
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository }}-chart
+          ref: main
+          token: ${{ steps.app-token.outputs.token }}
+          persist-credentials: false
+
+      - name: '[DEMO] Bump to version ${{ needs.build.outputs.image_tag }}'
+        run: |
+          sed -i "s/tag:.*/tag: \"${{ needs.build.outputs.image_tag }}\"/g" environments/platform-demo/values.yaml
+
+      - name: Commit changes
+        run: |
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+          git add environments/platform-demo/values.yaml
+          git commit -m "bump image to ${{ needs.build.outputs.image_tag }} version"
+
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@v3
+        id: create-pr
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          commit-message: '[DEMO] Bump to version ${{ needs.build.outputs.image_tag }}'
+          title: '[DEMO] Bump to version ${{ needs.build.outputs.image_tag }}'
+          body: |
+            [DEMO] This PR updates the IMAGE_TAG in values.yaml to ${{ needs.build.outputs.image_tag }}.
+          branch: bump-image-tag-demo-${{ needs.build.outputs.image_tag }}
+          base: main
+          labels: auto-merge
+          assignees: "codepusher-bot"
+
+      - name: 'Merge pull request'
+        uses: 'actions/github-script@v7'
+        with:
+          github-token: ${{ steps.app-token.outputs.token }}
+          script: |
+            await github.rest.pulls.merge({
+              owner: context.repo.owner,
+              pull_number: ${{ steps.create-pr.outputs.pull-request-number }},
+              repo: "${{ needs.build.outputs.repo_name }}-chart",
+            })
+
+  deploy-prod:
+    if: (github.event_name == 'push' || github.event_name == 'create') && startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    needs:
+      - build
+      - test-scan
+    steps:
+      - uses: actions/create-github-app-token@v1
+        id: app-token
+        with:
+          app-id: ${{ vars.APP_ID }}
+          private-key: ${{ secrets.PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+
+      - name: Checkout Chart Repo
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository }}-chart
+          ref: main
+          token: ${{ steps.app-token.outputs.token }}
+          persist-credentials: false
+
+      - name: '[PRODUCTION] Bump to version ${{ needs.build.outputs.image_tag }}'
+        run: |
+          sed -i "s/tag:.*/tag: \"${{ needs.build.outputs.image_tag }}\"/g" environments/platform-prod/values.yaml
+
+      - name: Commit changes
+        run: |
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+          git add environments/platform-prod/values.yaml
+          git commit -m "bump image to ${{ needs.build.outputs.image_tag }} version"
+
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@v3
+        id: create-pr
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          commit-message: '[PRODUCTION] Bump to version ${{ needs.build.outputs.image_tag }}'
+          title: '[PRODUCTION] Bump to version ${{ needs.build.outputs.image_tag }}'
+          body: |
+            [PRODUCTION] This PR updates the IMAGE_TAG in values.yaml to ${{ needs.build.outputs.image_tag }}.
+          branch: bump-image-tag-prod-${{ needs.build.outputs.image_tag }}
+          base: main
+          labels: auto-merge
+          assignees: "codepusher-bot"
+
+      - name: 'Merge pull request'
+        uses: 'actions/github-script@v7'
+        with:
+          github-token: ${{ steps.app-token.outputs.token }}
+          script: |
+            await github.rest.pulls.merge({
+              owner: context.repo.owner,
+              pull_number: ${{ steps.create-pr.outputs.pull-request-number }},
+              repo: "${{ needs.build.outputs.repo_name }}-chart",
+            })

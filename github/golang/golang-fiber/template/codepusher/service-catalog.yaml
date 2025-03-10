@@ -1,0 +1,9 @@
+apiVersion: codepusher.io/v1alpha1
+kind: Service
+metadata:
+  name: "{{ .serviceName }}"
+  description: "{{ .serviceDescription }}"
+spec:
+  language: go
+  owner: "{{ .owner }}"
+  project: "{{ .project }}"
