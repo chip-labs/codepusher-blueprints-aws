@@ -1,14 +1,14 @@
-FROM node:20.11.1-alpine@sha256:c0a3badbd8a0a760de903e00cedbca94588e609299820557e72cba2a53dbaa2c as base
+FROM node:22-alpine AS base
 
-FROM base as builder
+FROM base AS builder
 
 WORKDIR /usr/src/app
 
-COPY package*.json ./
+COPY package.json package-lock.json ./
 
-RUN npm install --omit=dev
+RUN npm install --only=production
 
-FROM base
+FROM base AS final
 
 WORKDIR /usr/src/app
 
@@ -16,6 +16,8 @@ COPY --from=builder /usr/src/app/node_modules ./node_modules
 
 COPY . .
 
+RUN npm run build
+
 EXPOSE 3000
 
-ENTRYPOINT [ "npm", "run","start" ]
+ENTRYPOINT ["node", "dist/server.js"]
