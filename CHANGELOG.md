@@ -1,3 +1,17 @@
+# [0.9.0](https://github.com/chip-labs/codepusher-blueprints-aws/compare/v0.8.0...v0.9.0) (2025-03-28)
+
+
+### Bug Fixes
+
+* **chart:** fix argo applicationset ([c6148fc](https://github.com/chip-labs/codepusher-blueprints-aws/commit/c6148fca3c6c10faba390fd282be705f98ca6742))
+* **pipeline:** remove test step on golang template ([c90f9ce](https://github.com/chip-labs/codepusher-blueprints-aws/commit/c90f9ce9fa33ad6e60aff296080c6f1670964ae9))
+* **template:** fix nodejs express template ([348a943](https://github.com/chip-labs/codepusher-blueprints-aws/commit/348a943b5df1ce683b7f4a2183dd19fce5b85cc9))
+
+
+### Features
+
+* **golang:** add golang fiber template ([fad1e81](https://github.com/chip-labs/codepusher-blueprints-aws/commit/fad1e81f4bbf0f4b2a1c045cfdcb633e561183be))
+
 # [0.9.0](https://github.com/chip-labs/codepusher-blueprints-aws/compare/v0.8.0...v0.9.0) (2025-03-12)
 
 
