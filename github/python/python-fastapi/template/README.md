@@ -1,26 +1,38 @@
-# {{ .serviceName }}
+# Projeto FastAPI
 
-## {{ .serviceDescription }}
+Template simples para um projeto FastAPI usando Poetry.
 
-## Setup
+## Requisitos
 
-1. Clone the repo:
+- Python 3.13.2+
+- [Poetry](https://python-poetry.org/)
+
+## Instalação
+
+1. Crie e ative o ambiente virtual:
+
    ```bash
-   git clone https://github.com/yourusername/fastapi-template.git
-   cd fastapi-template
+   python3 -m venv venv
+   source venv/bin/activate  # Linux/MacOS
+   # venv\Scripts\activate    # Windows
+   ```
 
-2. Install dependencies:
+2. Instale o Poetry (se necessário):
+
+   ```bash
+   pip install poetry
+   ```
+
+3. Instale as dependências:
+
    ```bash
    poetry install
-3. Run the app:
-   ```bash
-   uvicorn app.main:app --reload
+   ```
 
-4. Access the API at http://127.0.0.1:8000
+## Execução
 
-## Testing
+Inicie o servidor de desenvolvimento com:
 
-Run tests with:
 ```bash
-pytest
-
+uvicorn app.main:app --reload
+```

@@ -1,20 +1,46 @@
-# Base image
-FROM python:3.12-slim
+# Estágio de construção
+FROM python:3.13-slim as builder
 
-# Set working directory
 WORKDIR /app
 
-# Install dependencies
-COPY pyproject.toml poetry.lock* /app/
-RUN pip install --no-cache-dir poetry && \
-    poetry config virtualenvs.create false && \
-    poetry install --no-interaction --no-ansi
+# Instalar dependências do sistema e Poetry
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends curl && \
+    curl -sSL https://install.python-poetry.org | POETRY_HOME=/opt/poetry python - && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
-# Copy the application files
-COPY app /app/app
+ENV PATH="/opt/poetry/bin:$PATH" \
+    POETRY_VIRTUALENVS_CREATE=false
 
-# Expose port
-EXPOSE 8000
+# Copiar apenas as dependências primeiro para aproveitar cache
+COPY pyproject.toml poetry.lock ./
 
-# Run the application
-CMD ["poetry", "run", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Instalar dependências do projeto
+RUN poetry install --only main --no-interaction --no-ansi
+
+# Estágio final
+FROM python:3.13-slim
+
+WORKDIR /app
+
+# Copiar dependências instaladas
+COPY --from=builder /usr/local/lib/python3.13/site-packages /usr/local/lib/python3.13/site-packages
+COPY --from=builder /usr/local/bin /usr/local/bin
+
+# Copiar código da aplicação
+COPY . .
+
+# Configurar variáveis de ambiente
+ENV PYTHONPATH=/app \
+    PORT=8000 \
+    APP_ENV=production
+
+# Expor porta e executar a aplicação
+EXPOSE ${PORT}
+
+# Garantir que os arquivos pertencem a um usuário não-root
+RUN useradd -m appuser && chown -R appuser /app
+USER appuser
+
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

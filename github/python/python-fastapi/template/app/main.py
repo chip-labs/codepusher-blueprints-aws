@@ -1,12 +1,16 @@
 from fastapi import FastAPI
+from app.config.settings import settings
+from app.core.logging import configure_logging
 
-from app.api.endpoints import example
+from app.modules.chat.chat_router import chat_router
 
-app = FastAPI(title="FastAPI Template")
+configure_logging()
 
-# Include your routers
-app.include_router(example.router, prefix="/example", tags=["Example"])
+app = FastAPI(
+	title=settings.APP_TITLE,
+	description=settings.APP_DESCRIPTION,
+	docs_url=None,
+	redoc_url=None,
+)
 
-@app.get("/")
-def read_root():
-    return {"message": "Welcome to the FastAPI Template"}
+app.include_router(chat_router, prefix=settings.API_PREFIX)

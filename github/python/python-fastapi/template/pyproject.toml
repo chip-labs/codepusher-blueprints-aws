@@ -1,16 +1,20 @@
 [tool.poetry]
-name = "fastapi-template"
+name = "app"
 version = "0.1.0"
-description = "A template for FastAPI projects"
-authors = ["Your Name <you@example.com>"]
-license = "MIT"
+description = "This is a fastapi template"
+authors = ["Seu Nome <seu@email.com>"]
+readme = "README.md"
+package-mode = false
 
 [tool.poetry.dependencies]
-python = "^3.9"
-fastapi = "^0.100.0"
-pydantic = "^2.0"
-httpx = "^0.24.0"
+python = "^3.13.2"
+fastapi = "^0.115.12"
+uvicorn = "^0.34.0"
+pydantic = "^2.11.0"
+pydantic-settings = "^2.8.1"
+python-dotenv = "^1.1.0"
+colorlog = "^6.9.0"
 
-[tool.poetry.dev-dependencies]
-pytest     = "^7.0"
-pytest-cov = "^4.0"
+[build-system]
+requires = ["poetry-core"]
+build-backback = "poetry.core.masonry.api"
